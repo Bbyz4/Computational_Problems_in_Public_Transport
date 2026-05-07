@@ -16,17 +16,17 @@ def select_landmarks(G: nx.DiGraph, k: int, method: str = "random") -> List[Any]
 
     return landmarks
 
-def preprocess(G: nx.DiGraph, num_landmarks: int = 10, method: str = "random") -> Dict[Any]:
+def preprocess(G: nx.DiGraph, num_landmarks: int = 10, method: str = "random") -> Dict[str,Any]:
     landmarks = select_landmarks(G, num_landmarks, method)
 
-    G_rev = G.reverse(copy=True)
+    G_rev = G
 
     dist_to = {}
     dist_from = {}
 
     for L in landmarks:
         dist_to[L] = nx.single_source_dijkstra_path_length(G, L, weight="length")
-        dist_from[L] = nx.single_source_bellman_ford_path_length(G, L, weight="length")
+        dist_from[L] = nx.single_source_dijkstra_path_length(G_rev, L, weight="length")
 
     preprocessed = {
         "G": G,
@@ -87,11 +87,14 @@ def query(preprocessed: Dict[str, Any], source: Any, target: Any) -> Tuple[float
             path.reverse()
             return g_score[target], path, visited_order
 
-        for neighbor in G.successors(current):
+        for neighbor in G.neighbors(current):
             edge_data = G.get_edge_data(current, neighbor)
 
-            if isinstance(edge_data, dict):
-                length = next(iter(edge_data.values())).get("length", 1)
+            if G.is_multigraph():
+                length = min(
+                    attr.get("length", 1)
+                    for attr in edge_data.values()
+                )
             else:
                 length = edge_data.get("length", 1)
 

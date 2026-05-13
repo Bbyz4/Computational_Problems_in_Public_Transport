@@ -11,7 +11,7 @@ public class TestRouteRenderer : MonoBehaviour
     [SerializeField] private GameObject busStopPrefab;
 
     [Header("Map Settings")]
-    [SerializeField] private float coordinateScale = 10000f;
+    [SerializeField] private float coordinateScale = 1000f;
 
     // Optional manual origin
     [SerializeField] private float originLatitude = 50.0647f;

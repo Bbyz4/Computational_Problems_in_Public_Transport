@@ -13,3 +13,6 @@ A project focused on visualizing and experimenting with the RAPTOR (Round-based 
 
 ### Implementation log:
 12.05 - definied the project goals and requirements, created an initial unity project
+
+13.05 - implemented a basic version of the raptor algorithm, downloaded real transport network data from Kraków, performed some exploratory tests and found a few flaws to fix
+

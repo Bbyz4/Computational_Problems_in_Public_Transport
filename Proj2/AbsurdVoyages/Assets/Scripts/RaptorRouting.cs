@@ -121,15 +121,19 @@ public class RaptorRouting : MonoBehaviour
                         }
 
                         int arr = ParseGtfsTimeToMinutes(st.ArrivalTime);
-                        if (arr < earliestArrival[st.StopId])
-                        {
-                            StopData stoooop = database.GetStop(st.StopId);
-                            Debug.Log($"Earliest arrival to {stoooop.StopName} will be at {arr}");
 
-                            earliestArrival[st.StopId] = arr;
-                            previousStop[st.StopId] = boardingStopId;
-                            previousTrip[st.StopId] = tripId;
-                            newMarkedStops.Add(st.StopId);
+                        foreach(string sameStopID in database.SameNameStops.GetValueOrDefault(st.StopId))
+                        {
+                            if (arr < earliestArrival[sameStopID])
+                            {
+                                StopData stoooop = database.GetStop(sameStopID);
+                                Debug.Log($"Earliest arrival to {stoooop.StopName} will be at {arr}");
+
+                                earliestArrival[sameStopID] = arr;
+                                previousStop[sameStopID] = boardingStopId;
+                                previousTrip[sameStopID] = tripId;
+                                newMarkedStops.Add(sameStopID);
+                            }   
                         }
                     }
                 }

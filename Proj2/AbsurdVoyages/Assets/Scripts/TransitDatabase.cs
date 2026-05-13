@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 public class TransitDatabase : MonoBehaviour
@@ -21,6 +22,8 @@ public class TransitDatabase : MonoBehaviour
     public readonly Dictionary<string, TripData> TripsById = new();
     public readonly Dictionary<string, List<TripData>> TripsByRoute = new();
 
+    public Dictionary<string, List<string>> SameNameStops {get; private set; }
+
     // IMPORTANT:
     // stop_times.txt is HUGE.
     // We therefore index it immediately.
@@ -37,6 +40,8 @@ public class TransitDatabase : MonoBehaviour
         LoadRoutes();
         LoadTrips();
         LoadStopTimes();
+
+        BuildSameNameMap();
 
         Debug.Log($"Loaded:\n" +
                   $"Stops: {StopsById.Count}\n" +
@@ -268,6 +273,24 @@ private void LoadTrips()
         foreach (List<StopTimeData> tripStopTimes in StopTimesByTrip.Values)
         {
             tripStopTimes.Sort((a, b) => a.StopSequence.CompareTo(b.StopSequence));
+        }
+    }
+    public void BuildSameNameMap()
+    {
+        SameNameStops = new Dictionary<string, List<string>>();
+
+        // Group by stop name, ignoring case and whitespace
+        var groups = StopsById.Values
+            .GroupBy(s => s.StopName.Trim(), StringComparer.OrdinalIgnoreCase);
+
+        foreach (var group in groups)
+        {
+            var idList = group.Select(s => s.StopId).ToList();
+            foreach (string id in idList)
+            {
+                // Siblings = all other IDs in the same group
+                SameNameStops[id] = idList.Where(x => x != id).ToList();
+            }
         }
     }
 

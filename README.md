@@ -1,6 +1,19 @@
 # Computational_Problems_in_Public_Transport
 A repository for all projects made as a part of the Computational Problems in Public Transport course @ Jagiellonian University
 
+## Project 1 Description
+A library containing various efficient algorithm used in public transportation problems along with an example network generator and benchmark tests
+
+### Main goals:
+- provide a usable resource with optimised algorithms
+- perform efficiency tests and present results in a readable way
+- implement a generator that could create realistic-looking networks
+
+### Implementation log:
+before 24.05 - working on an old project 1 idea - comparasion between different landmark selection heuristics in A* and their performance
+
+24.05 - definied the new project goals
+
 
 ## Project 2 Description
 A project focused on visualizing and experimenting with the RAPTOR (Round-based Public Transit Routing) algorithm on public transport network. Project is built using C# along with Unity game engine.

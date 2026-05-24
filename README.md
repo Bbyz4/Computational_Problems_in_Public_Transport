@@ -1,6 +1,8 @@
 # Computational_Problems_in_Public_Transport
 A repository for all projects made as a part of the Computational Problems in Public Transport course @ Jagiellonian University
 
+Both projects use AI as co-author or as a tool in various places
+
 ## Project 1 Description
 A library containing various efficient algorithm used in public transportation problems along with an example network generator and benchmark tests
 
@@ -12,7 +14,7 @@ A library containing various efficient algorithm used in public transportation p
 ### Implementation log:
 before 24.05 - working on an old project 1 idea - comparasion between different landmark selection heuristics in A* and their performance
 
-24.05 - definied the new project goals
+24.05 - definied the new project goals, added an efficient class for maintaining a directed graph
 
 
 ## Project 2 Description

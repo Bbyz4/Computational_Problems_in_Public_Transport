@@ -1,5 +1,7 @@
+#pragma once
+
 #include<vector>
-#include "Graph.cpp"
+#include "Graph.h"
 
 class Algorithm
 {

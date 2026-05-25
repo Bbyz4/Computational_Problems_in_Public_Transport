@@ -1,54 +1,161 @@
 #include "Graph.h"
-#include <iostream>
-#include <iomanip>
+#include "Algorithm.h"
+#include "algs/Dijkstra.h"
 
-//AI generated main
+#include<iostream>
+#include<fstream>
+#include<sstream>
+#include<vector>
+#include<queue>
+#include<limits>
+#include<algorithm>
+#include<memory>
+#include<chrono>
 
-int main() {
-    Graph g;
+int main(int argc, char* argv[])
+{
+    if(argc != 3)
+    {
+        std::cerr << "Wrong arg number\n";
+        return 1;
+    }
 
-    // Dodajemy węzły (miasta) z przykładowymi współrzędnymi
-    g.add_node(50.061, 19.937);   // 0
-    g.add_node(50.072, 19.933);   // 1
-    g.add_node(50.067, 19.945);   // 2
-    g.add_node(50.058, 19.930);   // 3
+    Graph graph;
+    std::ifstream graphFile(argv[1]);
 
-    // Dodajemy krawędzie (drogi)
-    g.add_edge(0, 1, 0.5);
-    g.add_edge(0, 2, 0.8);
-    g.add_edge(1, 2, 0.3);
-    g.add_edge(2, 3, 0.6);
-    g.add_edge(1, 3, 0.9);
+    if(!graphFile)
+    {
+        std::cerr << "Graph file cannot be opened\n";
+        return 1;
+    }
 
-    // Kończymy budowę – powstają struktury CSR
-    g.build();
+    std::cout << "Building the graph\n";
 
-    std::cout << "Liczba węzłów: " << g.num_nodes() << "\n";
-    std::cout << "Liczba krawędzi: " << g.num_edges() << "\n\n";
+    std::string line;
+    while(std::getline(graphFile, line))
+    {
+        if(line.empty())
+        {
+            continue;
+        }
 
-    // Wyświetlenie sąsiadów (forward) dla każdego węzła
-    for (int v = 0; v < g.num_nodes(); ++v) {
-        std::cout << "Węzeł " << v << " (lat=" << g.lat(v) << ", lon=" << g.lon(v) << "):\n";
-        uint32_t beg = g.offset_begin(v);
-        uint32_t end = g.offset_end(v);
-        for (uint32_t i = beg; i < end; ++i) {
-            int to = g.edges()[i];
-            double w = g.weights()[i];
-            std::cout << "  -> " << to << " (waga=" << std::fixed << std::setprecision(2) << w << ")\n";
+        std::istringstream iss(line);
+        std::string type;
+        iss >> type;
+        if(type == "NODE")
+        {
+            int id;
+            double lat, lon;
+            iss >> id >> lat >> lon;
+
+            graph.add_node(lat, lon);
+        }
+        else if(type == "EDGE")
+        {
+            int from, to;
+            double weight;
+            iss >> from >> to >> weight;
+            
+            graph.add_edge(from, to, weight);
         }
     }
 
-    // Wyświetlenie sąsiadów wchodzących (reverse)
-    std::cout << "\nKrawędzie wchodzące (reverse):\n";
-    for (int v = 0; v < g.num_nodes(); ++v) {
-        std::cout << "Do węzła " << v << ":\n";
-        uint32_t beg = g.rev_offset_begin(v);
-        uint32_t end = g.rev_offset_end(v);
-        for (uint32_t i = beg; i < end; ++i) {
-            int from = g.rev_edges()[i];
-            double w = g.rev_weights()[i];
-            std::cout << "  <- " << from << " (waga=" << w << ")\n";
+    std::ifstream queryFile(argv[2]);
+    if(!queryFile)
+    {
+        std::cerr << "Query file cannot be opened\n";
+        return 1;
+    }
+
+    graph.build();
+    std::cout << "Graph built\n";
+
+    std::vector<std::pair<int, int>> queries;
+    while(std::getline(queryFile, line))
+    {
+        if(line.empty())
+        {
+            continue;
         }
+
+        std::istringstream iss(line);
+        std::string type;
+        iss >> type;
+
+        if(type == "QUERY")
+        {
+            int src, tgt;
+            iss >> src >> tgt;
+            queries.emplace_back(src, tgt);
+        }
+    }
+
+    // LIST OF ALGORITHMS TO CHECK
+    std::vector<std::unique_ptr<Algorithm>> algorithms;
+
+    algorithms.push_back(std::make_unique<Dijkstra>());
+
+    for(auto& algo : algorithms)
+    {
+        // PREPROCESS TIMING
+        auto preprocess_start =
+            std::chrono::high_resolution_clock::now();
+
+        algo->Preprocess(graph);
+
+        auto preprocess_end =
+            std::chrono::high_resolution_clock::now();
+
+        auto preprocess_time =
+            std::chrono::duration_cast<std::chrono::microseconds>(
+                preprocess_end - preprocess_start
+            );
+
+        // QUERY TIMING
+        auto query_start =
+            std::chrono::high_resolution_clock::now();
+
+        for(const auto& Q : queries)
+        {
+            std::vector<int> path =
+                algo->Query(Q.first, Q.second);
+
+            // potentially do something with the results
+        }
+
+        auto query_end =
+            std::chrono::high_resolution_clock::now();
+
+        auto total_query_time =
+            std::chrono::duration_cast<std::chrono::microseconds>(
+                query_end - query_start
+            );
+
+        double average_query_time = 0.0;
+
+        if(!queries.empty())
+        {
+            average_query_time =
+                static_cast<double>(total_query_time.count()) /
+                static_cast<double>(queries.size());
+        }
+
+        std::cout << "Algorithm done!\n";
+
+        std::cout
+            << "Preprocessing time: "
+            << preprocess_time.count()
+            << " us\n";
+
+        std::cout
+            << "Total query time: "
+            << total_query_time.count()
+            << " us\n";
+
+        std::cout
+            << "Average query time: "
+            << average_query_time
+            << " us\n";
     }
 
     return 0;

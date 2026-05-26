@@ -16,6 +16,7 @@ before 24.05 - working on an old project 1 idea - comparasion between different 
 
 24.05 - definied the new project goals, added an efficient class for maintaining a directed graph
 
+25.05 - added a graph generator, a query generator, an algorithm interface, the first algorithm (Dijkstra), and a simple main cpp file used for performance testing
 
 ## Project 2 Description
 A project focused on visualizing and experimenting with the RAPTOR (Round-based Public Transit Routing) algorithm on public transport network. Project is built using C# along with Unity game engine.

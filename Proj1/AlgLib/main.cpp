@@ -1,6 +1,7 @@
 #include "Graph.h"
 #include "Algorithm.h"
 #include "algs/Dijkstra.h"
+#include "algs/Astar.h"
 
 #include<iostream>
 #include<fstream>
@@ -11,6 +12,54 @@
 #include<algorithm>
 #include<memory>
 #include<chrono>
+#include<cmath>
+
+double ComputePathCost(const Graph& graph, const std::vector<int>& path)
+{
+    if(path.size() < 2)
+    {
+        return 0.0;
+    }
+
+    double total = 0.0;
+
+    for(int i = 0; i < path.size() - 1; i++)
+    {
+        int u = path[i];
+        int v = path[i+1];
+        bool found = false;
+
+        for(uint32_t e = graph.offset_begin(u); e < graph.offset_end(u); e++)
+        {
+            if(graph.edges()[e] == v)
+            {
+                total += graph.weights()[e];
+                found = true;
+                break;
+            }
+        }
+
+        if(!found)
+        {
+            return std::numeric_limits<double>::infinity();
+        }
+    }
+
+    return total;
+}
+
+double SimplifiedDistance(const Graph& graph, int a, int b)
+{
+    double lat_a = graph.lat(a);
+    double lon_a = graph.lon(a);
+    double lat_b = graph.lat(b);
+    double lon_b = graph.lon(b);
+
+    const double SCALE_FACTOR = 0.95;
+    double dx = (lon_b - lon_a);
+    double dy = (lat_b - lat_a);
+    return SCALE_FACTOR * std::sqrt(dx*dx + dy*dy);
+}
 
 int main(int argc, char* argv[])
 {
@@ -95,6 +144,32 @@ int main(int argc, char* argv[])
 
     algorithms.push_back(std::make_unique<Dijkstra>());
 
+    auto heuristics = [&graph](int node, int target)
+    {
+        return SimplifiedDistance(graph, node, target);
+    };
+
+    algorithms.push_back(std::make_unique<Astar>(heuristics));
+
+    //Ground truth is built using Dijkstra -------------------------------
+    std::vector<double> ground_truth_costs(queries.size(), 0.0);
+
+    Dijkstra dijkstra;
+    dijkstra.Preprocess(graph);
+
+    std::cout << "Running first Dijkstra...\n";
+
+    for(int i=0; i<queries.size(); i++)
+    {
+        int src = queries[i].first;
+        int tgt = queries[i].second;
+        std::vector<int> path = dijkstra.Query(src, tgt);
+        double cost = ComputePathCost(graph, path);
+        ground_truth_costs[i] = cost;
+    }
+
+    std::cout << "Ground truth established!\n";
+
     for(auto& algo : algorithms)
     {
         // PREPROCESS TIMING
@@ -115,12 +190,21 @@ int main(int argc, char* argv[])
         auto query_start =
             std::chrono::high_resolution_clock::now();
 
-        for(const auto& Q : queries)
+        for(int q=0; q<queries.size(); q++)
         {
+            auto Q = queries[q];
+
             std::vector<int> path =
                 algo->Query(Q.first, Q.second);
 
-            // potentially do something with the results
+            double computed_cost = ComputePathCost(graph, path);
+            double expected_cost = ground_truth_costs[q];
+        
+            const double EPS = 1e-6;
+            if(std::fabs(computed_cost - expected_cost) > EPS)
+            {
+                std::cout << "WARNING - MISMATCH FOR QUERY NR " << q << " !!!\n";
+            }
         }
 
         auto query_end =

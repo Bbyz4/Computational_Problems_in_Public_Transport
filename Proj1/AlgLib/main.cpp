@@ -4,6 +4,7 @@
 #include "algs/Astar.h"
 #include "algs/BiDirectionalDijkstra.h"
 #include "algs/BiDirectionalAstar.h"
+#include "algs/ALT.h"
 
 #include<iostream>
 #include<fstream>
@@ -159,7 +160,9 @@ int main(int argc, char* argv[])
         return SimplifiedDistance(graph, node, target, 0.5);
     };
 
-    algorithms.push_back(std::make_unique<BiDirectionalAstar>(heuristics2));
+    //algorithms.push_back(std::make_unique<BiDirectionalAstar>(heuristics2));
+
+    algorithms.push_back(std::make_unique<ALT>(32));
 
     //Ground truth is built using Dijkstra -------------------------------
     std::vector<double> ground_truth_costs(queries.size(), 0.0);

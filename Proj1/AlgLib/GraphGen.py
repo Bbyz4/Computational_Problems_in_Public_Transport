@@ -247,9 +247,9 @@ def write_queries_to_file(filename, queries):
 if __name__ == "__main__":
     # Example: generate 1000 nodes, average out-degree = 10,
     # with 5% weight noise, 5% chance to drop an edge, and 100 query pairs.
-    num_nodes = 1000
-    avg_degree = 100
-    num_queries = 10000
+    num_nodes = 100000
+    avg_degree = 5
+    num_queries = 500
 
     lats, lons, edges, queries = generate_graph(num_nodes, avg_degree,
                                                  width=100.0, height=100.0,

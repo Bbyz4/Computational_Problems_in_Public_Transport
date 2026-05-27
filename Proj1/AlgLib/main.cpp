@@ -2,6 +2,7 @@
 #include "Algorithm.h"
 #include "algs/Dijkstra.h"
 #include "algs/Astar.h"
+#include "algs/BiDirectionalDijkstra.h"
 
 #include<iostream>
 #include<fstream>
@@ -150,6 +151,8 @@ int main(int argc, char* argv[])
     };
 
     algorithms.push_back(std::make_unique<Astar>(heuristics));
+
+    algorithms.push_back(std::make_unique<BiDirectionalDijkstra>());
 
     //Ground truth is built using Dijkstra -------------------------------
     std::vector<double> ground_truth_costs(queries.size(), 0.0);

@@ -20,6 +20,8 @@ before 24.05 - working on an old project 1 idea - comparasion between different 
 
 26.05 - added an implementation of the A* algorithm, added a simple heuristic function, added a result verification method which currently takes Dijkstra as the ground truth for the shortest path length
 
+27.05 - added algorithms: BiDirectional Dijkstra, BiDirectional A* (currently a little malfunctioning), ALT. Added a script for automatic compilation and test launching
+
 ## Project 2 Description
 A project focused on visualizing and experimenting with the RAPTOR (Round-based Public Transit Routing) algorithm on public transport network. Project is built using C# along with Unity game engine.
 

@@ -3,6 +3,7 @@
 #include "algs/Dijkstra.h"
 #include "algs/Astar.h"
 #include "algs/BiDirectionalDijkstra.h"
+#include "algs/BiDirectionalAstar.h"
 
 #include<iostream>
 #include<fstream>
@@ -49,17 +50,16 @@ double ComputePathCost(const Graph& graph, const std::vector<int>& path)
     return total;
 }
 
-double SimplifiedDistance(const Graph& graph, int a, int b)
+double SimplifiedDistance(const Graph& graph, int a, int b, double scaleFactor)
 {
     double lat_a = graph.lat(a);
     double lon_a = graph.lon(a);
     double lat_b = graph.lat(b);
     double lon_b = graph.lon(b);
 
-    const double SCALE_FACTOR = 0.95;
     double dx = (lon_b - lon_a);
     double dy = (lat_b - lat_a);
-    return SCALE_FACTOR * std::sqrt(dx*dx + dy*dy);
+    return scaleFactor * std::sqrt(dx*dx + dy*dy);
 }
 
 int main(int argc, char* argv[])
@@ -147,12 +147,19 @@ int main(int argc, char* argv[])
 
     auto heuristics = [&graph](int node, int target)
     {
-        return SimplifiedDistance(graph, node, target);
+        return SimplifiedDistance(graph, node, target, 0.95);
     };
 
     algorithms.push_back(std::make_unique<Astar>(heuristics));
 
     algorithms.push_back(std::make_unique<BiDirectionalDijkstra>());
+
+    auto heuristics2 = [&graph](int node, int target)
+    {
+        return SimplifiedDistance(graph, node, target, 0.5);
+    };
+
+    algorithms.push_back(std::make_unique<BiDirectionalAstar>(heuristics2));
 
     //Ground truth is built using Dijkstra -------------------------------
     std::vector<double> ground_truth_costs(queries.size(), 0.0);

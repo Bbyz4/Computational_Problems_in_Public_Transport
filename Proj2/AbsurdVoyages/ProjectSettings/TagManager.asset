@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 3
   tags:
   - TransitDatabase
+  - RouteListParent
+  - RouteDescParent
   layers:
   - Default
   - TransparentFX

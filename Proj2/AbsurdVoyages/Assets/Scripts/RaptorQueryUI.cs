@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
 
 public class RouteQueryUI : MonoBehaviour
 {
@@ -42,6 +43,8 @@ public class RouteQueryUI : MonoBehaviour
         }
 
         Debug.Log("===== ROUTE FOUND =====");
+
+        GameObject.FindFirstObjectByType<RouteListParentBehaviour>(FindObjectsInactive.Include).PlotResults(new List<JourneyResult>{result});
 
         foreach(JourneyStep step in result.Steps)
         {

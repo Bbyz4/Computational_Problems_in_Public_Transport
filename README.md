@@ -37,3 +37,5 @@ A project focused on visualizing and experimenting with the RAPTOR (Round-based 
 13.05 - implemented a basic version of the raptor algorithm, downloaded real transport network data from Kraków, performed some exploratory tests and found a few flaws to fix
 
 18.05 - worked on automatically importing current route updates in Kraków
+
+29.05 - UI improvements, raptor generalization

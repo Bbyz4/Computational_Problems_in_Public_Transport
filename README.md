@@ -22,6 +22,10 @@ before 24.05 - working on an old project 1 idea - comparasion between different 
 
 27.05 - added algorithms: BiDirectional Dijkstra, BiDirectional A* (currently a little malfunctioning), ALT. Added a script for automatic compilation and test launching
 
+02.06 - 04.06 - added various algorithms with arc-flags preprocessing features: ARC-Dijkstra, ARC-Astar and ARC-ALT. Created a bunch of example graphs and query sets, started performing the benchmark tests
+
+05.06 - finished algorithm testing, wrote a report with project description, implementation insights and results
+
 ## Project 2 Description
 A project focused on visualizing and experimenting with the RAPTOR (Round-based Public Transit Routing) algorithm on public transport network. Project is built using C# along with Unity game engine.
 

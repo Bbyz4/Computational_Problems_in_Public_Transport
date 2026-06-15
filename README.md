@@ -43,3 +43,7 @@ A project focused on visualizing and experimenting with the RAPTOR (Round-based 
 18.05 - worked on automatically importing current route updates in Kraków
 
 29.05 - UI improvements, raptor generalization
+
+15.06 - UI/UX upgrade, added screenshots
+
+<img width="741" height="499" alt="Zrzut ekranu 2026-06-15 145933" src="https://github.com/user-attachments/assets/c0b66325-3d6a-491e-bf94-10dfe0931dbc" />

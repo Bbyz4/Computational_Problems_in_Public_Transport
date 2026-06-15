@@ -117,6 +117,8 @@ private void LoadTrips()
 
         string[] lines = File.ReadAllLines(path);
 
+        HashSet<string> seenStopCodes = new();
+
         for (int i = 1; i < lines.Length; i++)
         {
             if (string.IsNullOrWhiteSpace(lines[i]))
@@ -126,6 +128,15 @@ private void LoadTrips()
 
             try
             {
+                string stopCode = cols[1];
+
+                if(!string.IsNullOrWhiteSpace(stopCode) && seenStopCodes.Contains(stopCode))
+                {
+                    continue;
+                }
+                
+                seenStopCodes.Add(stopCode);
+
                 StopData stop = new()
                 {
                     StopId = cols[0],

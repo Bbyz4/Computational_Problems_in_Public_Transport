@@ -13,6 +13,11 @@ public class RouteListParentBehaviour : MonoBehaviour
 
     public void PlotResults(List<JourneyResult> results)
     {
+        foreach (Transform child in contentParent.transform)
+        {
+            Destroy(child.gameObject);
+        }
+
         gameObject.SetActive(true);
         
         foreach(JourneyResult result in results)
